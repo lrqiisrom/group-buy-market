@@ -1,4 +1,4 @@
-package com.rom.domain.xxx.model.entity;
+package com.rom.domain.activity.model.entity;
 
 
 import lombok.AllArgsConstructor;
