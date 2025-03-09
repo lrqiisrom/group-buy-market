@@ -10,6 +10,6 @@ package com.rom.types.design.framework.tree;
 public interface StrategyHandler<T, D, R> {
     /** 接口的默认实现实例 **/
     StrategyHandler DEFAULT = (T, D) -> null;//接口的默认实现实例
-
+    /** 用于责任链中进行业务上的相关操作，并调用router方法 **/
     R apply(T requestParameter, D dynamicContext) throws Exception;
 }
