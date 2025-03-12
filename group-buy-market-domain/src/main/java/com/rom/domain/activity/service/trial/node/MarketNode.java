@@ -20,6 +20,11 @@ public class MarketNode extends AbstractGroupBuyMarketSupport<MarketProductEntit
     }
 
     @Override
+    protected TrialBalanceEntity doApply(MarketProductEntity requestParameter, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws Exception {
+        return null;
+    }
+
+    @Override
     public StrategyHandler<MarketProductEntity, DefaultActivityStrategyFactory.DynamicContext, TrialBalanceEntity> get(MarketProductEntity requestParameter, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws Exception {
         return null;
     }
