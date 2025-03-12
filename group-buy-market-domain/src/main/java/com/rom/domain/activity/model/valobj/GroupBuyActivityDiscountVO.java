@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * @description 拼团活动营销配置值对象
+ */
 @Getter
 @Builder
 @AllArgsConstructor
