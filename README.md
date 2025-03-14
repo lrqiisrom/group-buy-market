@@ -1,10 +1,9 @@
-# xfg-frame-archetype - DDD 脚手架 - @小傅哥 v2.2
+### domain层
+`entity` 可变、来源于单一PO对象
+`vo` 不可变、用于查询、一般是聚合对象
 
-- docker 使用文档：[https://bugstack.cn/md/road-map/docker.html](https://bugstack.cn/md/road-map/docker.html)
-- DDD 教程；
-  - [DDD 概念理论](https://bugstack.cn/md/road-map/ddd-guide-01.html)
-  - [DDD 建模方法](https://bugstack.cn/md/road-map/ddd-guide-02.html)
-  - [DDD 工程模型](https://bugstack.cn/md/road-map/ddd-guide-03.html)
-  - [DDD 架构设计](https://bugstack.cn/md/road-map/ddd.html)
-  - [DDD 建模案例](https://bugstack.cn/md/road-map/ddd-model.html)
+VO和Entity两者都是软件开发中常见的对象类型
 
+简而言之就是Entity数据比较完整，VO是挑着来的
+
+![img.png](docs/imgs/img.png)

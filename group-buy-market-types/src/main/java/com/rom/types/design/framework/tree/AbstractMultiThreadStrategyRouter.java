@@ -3,6 +3,9 @@ package com.rom.types.design.framework.tree;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 public abstract class AbstractMultiThreadStrategyRouter <T, D, R> implements StrategyMapper<T, D, R>, StrategyHandler<T, D, R> {
     @Getter
     @Setter
@@ -25,7 +28,7 @@ public abstract class AbstractMultiThreadStrategyRouter <T, D, R> implements Str
     /**
      * 异步加载数据
      */
-    protected abstract void multiThread(T requestParameter, D dynamicContext) throws Exception;
+    protected abstract void multiThread(T requestParameter, D dynamicContext) throws ExecutionException, InterruptedException, TimeoutException;
     /**
      * 业务流程受理
      */
