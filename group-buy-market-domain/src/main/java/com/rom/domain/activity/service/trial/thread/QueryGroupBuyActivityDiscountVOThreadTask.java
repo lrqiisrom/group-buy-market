@@ -25,6 +25,6 @@ public class QueryGroupBuyActivityDiscountVOThreadTask implements Callable<Group
 
     @Override
     public GroupBuyActivityDiscountVO call() throws Exception {
-        return activityRepository.queryGroupBuyActivityDiscount(channel, source);
+        return activityRepository.queryGroupBuyActivityDiscount(source, channel);
     }
 }

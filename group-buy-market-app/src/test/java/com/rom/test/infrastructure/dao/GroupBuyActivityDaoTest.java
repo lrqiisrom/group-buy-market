@@ -1,4 +1,4 @@
-package com.rom.test.dao;
+package com.rom.test.infrastructure.dao;
 
 import com.rom.infrastructure.dao.po.GroupBuyActivity;
 import com.alibaba.fastjson.JSON;
@@ -24,6 +24,14 @@ public class GroupBuyActivityDaoTest {
     public void test_queryGroupBuyActivityList() {
         List<GroupBuyActivity> groupBuyActivities = groupBuyActivityDao.queryGroupBuyActivityList();
         log.info("测试结果:{}", JSON.toJSONString(groupBuyActivities));
+    }
+    @Test
+    public void test_queryValidGroupBuyActivity() {
+        GroupBuyActivity groupBuyActivityReq = new GroupBuyActivity();
+        groupBuyActivityReq.setSource("s01");
+        groupBuyActivityReq.setChannel("c01");
+        GroupBuyActivity queryValidGroupBuyActivity = groupBuyActivityDao.queryValidGroupBuyActivity(groupBuyActivityReq);
+        log.info("测试结果:{}", JSON.toJSONString(queryValidGroupBuyActivity));
     }
 
 }

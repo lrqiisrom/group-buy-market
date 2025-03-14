@@ -1,4 +1,4 @@
-package com.rom.test.dao;
+package com.rom.test.infrastructure.dao;
 
 import com.rom.infrastructure.dao.IGroupBuyDiscountDao;
 import com.rom.infrastructure.dao.po.GroupBuyDiscount;

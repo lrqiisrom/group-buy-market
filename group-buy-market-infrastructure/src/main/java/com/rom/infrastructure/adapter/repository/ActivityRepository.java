@@ -35,7 +35,10 @@ public class ActivityRepository implements IActivityRepository {
         groupBuyActivityReq.setSource(source);
         groupBuyActivityReq.setChannel(channel);
         //接受查询结果
+        //System.out.println(source + " " + channel);
+        //System.out.println(groupBuyActivityReq);
         GroupBuyActivity groupBuyActivityRes = groupBuyActivityDao.queryValidGroupBuyActivity(groupBuyActivityReq);
+        //System.out.println(groupBuyActivityRes);
         String discountId = groupBuyActivityRes.getDiscountId();
         GroupBuyDiscount groupBuyDiscountRes = groupBuyDiscountDao.queryGroupBuyActivityDiscountByDiscountId(discountId);
         GroupBuyActivityDiscountVO.GroupBuyDiscount groupBuyDiscount = GroupBuyActivityDiscountVO.GroupBuyDiscount.builder()
@@ -44,6 +47,7 @@ public class ActivityRepository implements IActivityRepository {
                 .discountType(groupBuyDiscountRes.getDiscountType())
                 .marketPlan(groupBuyDiscountRes.getMarketPlan())
                 .marketExpr(groupBuyDiscountRes.getMarketExpr())
+                .tagId(groupBuyDiscountRes.getTagId())
                 .build();
 
         return GroupBuyActivityDiscountVO.builder()
