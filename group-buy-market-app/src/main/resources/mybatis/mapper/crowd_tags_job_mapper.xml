@@ -19,7 +19,7 @@
     <select id="queryCrowdTagsJob" parameterType="com.rom.infrastructure.dao.po.CrowdTagsJob" resultMap="dataMap">
         select tag_type, tag_rule, stat_start_time, stat_end_time
         from crowd_tags_job
-        where tag_id = #{tagId} and bath_id = #{batchId}
+        where tag_id = #{tagId} and batch_id = #{batchId}
     </select>
 
 
