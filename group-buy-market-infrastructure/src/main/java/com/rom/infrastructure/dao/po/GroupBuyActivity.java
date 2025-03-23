@@ -18,12 +18,6 @@ public class GroupBuyActivity {
     private Long activityId;
     /** 活动名称 **/
     private String activityName;
-    /** 来源 **/
-    private String source;
-    /** 渠道 **/
-    private String channel;
-    /** 商品ID **/
-    private String goodsId;
     /** 折扣ID **/
     private String discountId;
     /** 拼团方式（0自动成团、1达成目标拼团） **/

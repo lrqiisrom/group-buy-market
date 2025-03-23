@@ -9,5 +9,6 @@ import java.util.List;
 public interface IGroupBuyActivityDao {
     List<GroupBuyActivity> queryGroupBuyActivityList();
     //本质是根据SC值查询符合条件的GroupBuyActivity
-    GroupBuyActivity queryValidGroupBuyActivity(GroupBuyActivity groupBuyActivityReq);
+    //GroupBuyActivity queryValidGroupBuyActivity(GroupBuyActivity groupBuyActivityReq);
+    GroupBuyActivity queryValidGroupBuyActivityId(Long activityId);
 }

@@ -1,8 +1,10 @@
 package com.rom.test.infrastructure.dao;
 
+import com.rom.infrastructure.dao.ISCSkuActivityDao;
 import com.rom.infrastructure.dao.po.GroupBuyActivity;
 import com.alibaba.fastjson.JSON;
 import com.rom.infrastructure.dao.IGroupBuyActivityDao;
+import com.rom.infrastructure.dao.po.SCSkuActivity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,18 +22,20 @@ public class GroupBuyActivityDaoTest {
     @Resource
     private IGroupBuyActivityDao groupBuyActivityDao;
 
+    @Resource
+    private ISCSkuActivityDao skuActivityDao;
     @Test
     public void test_queryGroupBuyActivityList() {
         List<GroupBuyActivity> groupBuyActivities = groupBuyActivityDao.queryGroupBuyActivityList();
         log.info("测试结果:{}", JSON.toJSONString(groupBuyActivities));
     }
-    @Test
-    public void test_queryValidGroupBuyActivity() {
-        GroupBuyActivity groupBuyActivityReq = new GroupBuyActivity();
-        groupBuyActivityReq.setSource("s01");
-        groupBuyActivityReq.setChannel("c01");
-        GroupBuyActivity queryValidGroupBuyActivity = groupBuyActivityDao.queryValidGroupBuyActivity(groupBuyActivityReq);
-        log.info("测试结果:{}", JSON.toJSONString(queryValidGroupBuyActivity));
-    }
+//    @Test
+//    public void test_queryValidGroupBuyActivity() {
+//        SCSkuActivity scSkuActivityReq = new SCSkuActivity();
+//        scSkuActivityReq.setSource("s01");
+//        scSkuActivityReq.setChannel("c01");
+//        scSkuActivityReq.setGoodsId("9890001");
+//        log.info("测试结果:{}", JSON.toJSONString(queryValidGroupBuyActivity));
+//    }
 
 }
