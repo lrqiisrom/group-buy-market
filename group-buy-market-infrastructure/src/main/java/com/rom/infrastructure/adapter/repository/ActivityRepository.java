@@ -13,6 +13,8 @@ import com.rom.infrastructure.dao.po.GroupBuyActivity;
 import com.rom.infrastructure.dao.po.GroupBuyDiscount;
 import com.rom.infrastructure.dao.po.SCSkuActivity;
 import com.rom.infrastructure.dao.po.Sku;
+import com.rom.infrastructure.redis.IRedisService;
+import org.redisson.api.RBitSet;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -34,6 +36,9 @@ public class ActivityRepository implements IActivityRepository {
 
     @Resource
     private ISCSkuActivityDao skuActivityDao;
+
+    @Resource
+    private IRedisService redisService;
     /** 根据SC渠道查询商品折扣 */
     @Override
     public GroupBuyActivityDiscountVO queryGroupBuyActivityDiscount(Long activityId) {
@@ -99,5 +104,14 @@ public class ActivityRepository implements IActivityRepository {
                 .activityId(scSkuActivityRes.getActivityId())
                 .goodsId(scSkuActivityRes.getGoodsId())
                 .build();
+    }
+
+    @Override
+    public Boolean isTagCrowdRange(String tagId, String userId) {
+        RBitSet rBitSet = redisService.getBitSet(tagId);
+        if(!rBitSet.isExists()) return true;
+
+        //判断用户是否在人群中
+        return rBitSet.get(redisService.getIndexFromUserId(userId));
     }
 }
