@@ -17,7 +17,7 @@
     <select id="querySCSkuActivityBySCGoodsId" parameterType="com.rom.infrastructure.dao.po.SCSkuActivity" resultMap="dataMap">
         select source, channel, activity_id, goods_id
         from sc_sku_activity
-        where goods_id = #{goodsId}
+        where goods_id = #{goodsId} and source = #{source} and channel = #{channel}
     </select>
 
 </mapper>
