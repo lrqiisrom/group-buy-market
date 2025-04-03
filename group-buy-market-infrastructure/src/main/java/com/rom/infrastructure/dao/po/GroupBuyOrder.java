@@ -19,29 +19,29 @@ public class GroupBuyOrder {
     /** 自增ID */
     private Long id;
     /** 拼单组队ID */
-    private String team_id;
+    private String teamId;
     /** 活动ID */
-    private Long activity_id;
+    private Long activityId;
     /** 渠道 */
     private String source;
     /** 来源 */
     private String channel;
     /** 原始价格 */
-    private BigDecimal original_price;
+    private BigDecimal originalPrice;
     /** 折扣金额 */
-    private BigDecimal deduction_price;
+    private BigDecimal deductionPrice;
     /** 支付价格 */
-    private BigDecimal pay_price;
+    private BigDecimal payPrice;
     /** 目标数量 */
-    private Integer target_count;
+    private Integer targetCount;
     /** 完成数量 */
-    private Integer complete_count;
+    private Integer completeCount;
     /** 锁单数量 */
-    private Integer lock_count;
+    private Integer lockCount;
     /** 状态（0-拼单中、1-完成、2-失败） */
     private Integer status;
     /** 创建时间 */
-    private Date create_time;
+    private Date createTime;
     /** 更新时间 */
-    private Date update_time;
+    private Date updateTime;
 }
