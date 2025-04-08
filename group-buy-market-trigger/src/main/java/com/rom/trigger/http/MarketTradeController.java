@@ -110,6 +110,7 @@ public class MarketTradeController implements IMarketTradeService {
                             .goodsId(goodsId)
                             .originalPrice(trialBalanceEntity.getOriginalPrice())
                             .deductionPrice(trialBalanceEntity.getDeductionPrice())
+                            .payPrice(trialBalanceEntity.getPayPrice())
                             .goodsName(trialBalanceEntity.getGoodsName())
                             .source(source)
                             .build()
