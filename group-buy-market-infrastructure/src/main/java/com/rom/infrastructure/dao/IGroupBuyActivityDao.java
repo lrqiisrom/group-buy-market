@@ -11,4 +11,5 @@ public interface IGroupBuyActivityDao {
     //本质是根据SC值查询符合条件的GroupBuyActivity
     //GroupBuyActivity queryValidGroupBuyActivity(GroupBuyActivity groupBuyActivityReq);
     GroupBuyActivity queryValidGroupBuyActivityId(Long activityId);
+    GroupBuyActivity queryGroupBuyActivityByActivityId(Long activityId);
 }

@@ -3,11 +3,10 @@ package com.rom.domain.trade.service;
 
 import com.rom.domain.trade.adapter.repository.ITradeRepository;
 import com.rom.domain.trade.model.aggregate.GroupBuyOrderAggregate;
-import com.rom.domain.trade.model.entity.MarketPayOrderEntity;
-import com.rom.domain.trade.model.entity.PayActivityEntity;
-import com.rom.domain.trade.model.entity.PayDiscountEntity;
-import com.rom.domain.trade.model.entity.UserEntity;
+import com.rom.domain.trade.model.entity.*;
 import com.rom.domain.trade.model.valobj.GroupBuyProgressVO;
+import com.rom.domain.trade.service.factory.TradeRuleFilterFactory;
+import com.rom.types.design.framework.link.model2.chain.BusinessLinkedList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +21,8 @@ public class TradeOrderService implements ITradeOrderService {
 
     @Resource
     private ITradeRepository repository;
+    @Resource
+    BusinessLinkedList<TradeRuleCommandEntity, TradeRuleFilterFactory.DynamicContext, TradeRuleFilterBackEntity> tradeRuleFilter;
     @Override
     public MarketPayOrderEntity queryNoPayMarketPayOrderByOutTradeNo(String userId, String outTradeNo) {
         log.info("拼团交易-查询未支付营销订单:{} outTradeNo:{}", userId, outTradeNo);
@@ -35,12 +36,22 @@ public class TradeOrderService implements ITradeOrderService {
     }
 
     @Override
-    public MarketPayOrderEntity lockMarketPayOrder(UserEntity userEntity, PayActivityEntity payActivityEntity, PayDiscountEntity payDiscountEntity) {
+    public MarketPayOrderEntity lockMarketPayOrder(UserEntity userEntity, PayActivityEntity payActivityEntity, PayDiscountEntity payDiscountEntity) throws Exception {
         log.info("拼团交易-锁定营销优惠支付订单:{} activityId:{} goodsId:{}", userEntity.getUserId(), payActivityEntity.getActivityId(), payDiscountEntity.getGoodsId());
+        //交易规则过滤
+        TradeRuleFilterBackEntity tradeRuleFilterBackEntity = tradeRuleFilter.apply(
+                TradeRuleCommandEntity.builder()
+                        .activityId(payActivityEntity.getActivityId())
+                        .userId(userEntity.getUserId())
+                        .build(),
+                new TradeRuleFilterFactory.DynamicContext()
+        );
+        Integer userTakeOrderCount = tradeRuleFilterBackEntity.getUserTakeOrderCount();
         GroupBuyOrderAggregate groupBuyOrderAggregate = GroupBuyOrderAggregate.builder()
                 .payActivityEntity(payActivityEntity)
                 .payDiscountEntity(payDiscountEntity)
                 .userEntity(userEntity)
+                .userTakeOrderCount(userTakeOrderCount)
                 .build();
         return repository.lockMarketPayOrder(groupBuyOrderAggregate);
     }

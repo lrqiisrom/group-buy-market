@@ -63,8 +63,8 @@ public class TagRepository implements ITagRepository {
             bitSet.set(redisService.getIndexFromUserId(userId),  true);
         } catch (DuplicateKeyException ignore) {
             //忽略唯一所引冲突
-            RBitSet bitSet = redisService.getBitSet(tagId);
-            bitSet.set(redisService.getIndexFromUserId(userId),  true);
+//            RBitSet bitSet = redisService.getBitSet(tagId);
+//            bitSet.set(redisService.getIndexFromUserId(userId),  true);
         }
     }
 

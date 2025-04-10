@@ -34,7 +34,7 @@ public class TagNode extends AbstractGroupBuyMarketSupport<MarketProductEntity, 
         }
 
         boolean isWithin = repository.isTagCrowdRange(tagId, requestParameter.getUserId());
-        dynamicContext.setVisible(groupBuyActivityDiscountVO.isEnable() || isWithin);
+        dynamicContext.setVisible(groupBuyActivityDiscountVO.isVisible() || isWithin);
         dynamicContext.setEnabled(groupBuyActivityDiscountVO.isEnable() || isWithin);
         return router(requestParameter, dynamicContext);
     }
