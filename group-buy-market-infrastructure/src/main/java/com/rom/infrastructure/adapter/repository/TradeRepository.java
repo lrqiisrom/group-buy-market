@@ -2,6 +2,7 @@ package com.rom.infrastructure.adapter.repository;
 
 import com.rom.domain.trade.adapter.repository.ITradeRepository;
 import com.rom.domain.trade.model.aggregate.GroupBuyOrderAggregate;
+import com.rom.domain.trade.model.aggregate.GroupBuyTeamSettlementAggregate;
 import com.rom.domain.trade.model.entity.*;
 import com.rom.domain.trade.model.valobj.GroupBuyProgressVO;
 import com.rom.domain.trade.model.valobj.TradeOrderStatusEnumVO;
@@ -13,6 +14,7 @@ import com.rom.infrastructure.dao.po.GroupBuyOrder;
 import com.rom.infrastructure.dao.po.GroupBuyOrderList;
 import com.rom.types.common.Constants;
 import com.rom.types.enums.ActivityStatusEnumVO;
+import com.rom.types.enums.GroupBuyOrderEnumVO;
 import com.rom.types.enums.ResponseCode;
 import com.rom.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,7 @@ public class TradeRepository implements ITradeRepository {
         GroupBuyOrderList groupBuyOrderListRes = groupBuyOrderListDao.queryGroupBuyOrderRecordByOutTradeNo(groupBuyOrderListReq);
         if (null == groupBuyOrderListRes) return null;
         return MarketPayOrderEntity.builder()
+                .teamId(groupBuyOrderListRes.getTeamId())
                 .orderId(groupBuyOrderListRes.getOrderId())
                 .deductionPrice(groupBuyOrderListRes.getDeductionPrice())
                 .tradeOrderStatusEnumVO(TradeOrderStatusEnumVO.valueOf(groupBuyOrderListRes.getStatus()))
@@ -116,6 +119,7 @@ public class TradeRepository implements ITradeRepository {
             throw new AppException(ResponseCode.INDEX_EXCEPTION);
         }
         return MarketPayOrderEntity.builder()
+                .teamId(teamId)
                 .orderId(orderId)
                 .deductionPrice(payDiscountEntity.getDeductionPrice())
                 .tradeOrderStatusEnumVO(TradeOrderStatusEnumVO.CREATE)
@@ -148,4 +152,38 @@ public class TradeRepository implements ITradeRepository {
         groupBuyOrderListReq.setUserId(userId);
         return groupBuyOrderListDao.queryOrderCountByActivityId(groupBuyOrderListReq);
     }
+
+    @Override
+    public GroupBuyTeamEntity queryGroupBuyTeamByTeamId(String teamId) {
+        GroupBuyOrder groupBuyOrder = groupBuyOrderDao.queryGroupBuyTeamByTeamId(teamId);
+        return GroupBuyTeamEntity.builder()
+                .teamId(groupBuyOrder.getTeamId())
+                .activityId(groupBuyOrder.getActivityId())
+                .targetCount(groupBuyOrder.getTargetCount())
+                .completeCount(groupBuyOrder.getCompleteCount())
+                .lockCount(groupBuyOrder.getLockCount())
+                .status(GroupBuyOrderEnumVO.valueOf(groupBuyOrder.getStatus()))
+                .build();
+    }
+
+    @Transactional(timeout = 500)
+    @Override
+    public void settlementMarketPayOrder(GroupBuyTeamSettlementAggregate groupBuyTeamSettlementAggregate) {
+        UserEntity userEntity = groupBuyTeamSettlementAggregate.getUserEntity();
+        GroupBuyTeamEntity groupBuyTeamEntity = groupBuyTeamSettlementAggregate.getGroupBuyTeamEntity();
+        TradePaySuccessEntity tradePaySuccessEntity = groupBuyTeamSettlementAggregate.getTradePaySuccessEntity();
+
+        //1. 更新订单状态（order_list）
+        GroupBuyOrderList groupBuyOrderListReq = new GroupBuyOrderList();
+        groupBuyOrderListReq.setOutTradeNo(tradePaySuccessEntity.getOutTradeNo());
+        groupBuyOrderListReq.setUserId(userEntity.getUserId());
+        int updateOrderListStatusCount = groupBuyOrderListDao.updateOrderStatus2COMPLETE(groupBuyOrderListReq);
+        if(1 != updateOrderListStatusCount) {
+            throw new AppException(ResponseCode.UPDATE_ZERO);
+        }
+
+        //2. 更新拼团达成数量（complete_count）(order)
+
+    }
+
 }

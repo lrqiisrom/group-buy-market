@@ -14,7 +14,7 @@ import com.rom.domain.trade.model.entity.PayActivityEntity;
 import com.rom.domain.trade.model.entity.PayDiscountEntity;
 import com.rom.domain.trade.model.entity.UserEntity;
 import com.rom.domain.trade.model.valobj.GroupBuyProgressVO;
-import com.rom.domain.trade.service.ITradeOrderService;
+import com.rom.domain.trade.service.ITradeLockOrderService;
 import com.rom.types.enums.ResponseCode;
 import com.rom.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ import java.util.Objects;
 @RequestMapping("/api/v1/gbm/trade/")
 public class MarketTradeController implements IMarketTradeService {
     @Resource
-    private ITradeOrderService tradeOrderService;
+    private ITradeLockOrderService tradeOrderService;
     @Resource
     private IIndexGroupBuyMarketService indexGroupBuyMarketService;
     @RequestMapping(value = "lock_market_pay_order", method = RequestMethod.POST)
