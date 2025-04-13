@@ -1,5 +1,6 @@
 package com.rom.infrastructure.adapter.repository;
 
+import com.alibaba.fastjson.JSON;
 import com.rom.domain.trade.adapter.repository.ITradeRepository;
 import com.rom.domain.trade.model.aggregate.GroupBuyOrderAggregate;
 import com.rom.domain.trade.model.aggregate.GroupBuyTeamSettlementAggregate;
@@ -9,9 +10,11 @@ import com.rom.domain.trade.model.valobj.TradeOrderStatusEnumVO;
 import com.rom.infrastructure.dao.IGroupBuyActivityDao;
 import com.rom.infrastructure.dao.IGroupBuyOrderDao;
 import com.rom.infrastructure.dao.IGroupBuyOrderListDao;
+import com.rom.infrastructure.dao.INotifyTaskDao;
 import com.rom.infrastructure.dao.po.GroupBuyActivity;
 import com.rom.infrastructure.dao.po.GroupBuyOrder;
 import com.rom.infrastructure.dao.po.GroupBuyOrderList;
+import com.rom.infrastructure.dao.po.NotifyTask;
 import com.rom.types.common.Constants;
 import com.rom.types.enums.ActivityStatusEnumVO;
 import com.rom.types.enums.GroupBuyOrderEnumVO;
@@ -25,6 +28,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -35,6 +41,8 @@ public class TradeRepository implements ITradeRepository {
     private IGroupBuyOrderListDao groupBuyOrderListDao;
     @Resource
     private IGroupBuyActivityDao groupBuyActivityDao;
+    @Resource
+    private INotifyTaskDao notifyTaskDao;
     @Override
     public MarketPayOrderEntity queryNoPayMarketPayOrderByOutTradeNo(String userId, String outTradeNo) {
         GroupBuyOrderList groupBuyOrderListReq = new GroupBuyOrderList();
@@ -183,7 +191,33 @@ public class TradeRepository implements ITradeRepository {
         }
 
         //2. 更新拼团达成数量（complete_count）(order)
-
+        Integer updateCompleteCount = groupBuyOrderDao.updateAddCompleteCount(groupBuyTeamEntity.getTeamId());
+        if(1 != updateCompleteCount) {
+            throw new AppException(ResponseCode.UPDATE_ZERO);
+        }
+        //3. 更新拼团完成状态（拼单人数已满）(order)
+        if(groupBuyTeamEntity.getTargetCount() - groupBuyTeamEntity.getCompleteCount() == 1) {
+            Integer updateOrderStatusCount = groupBuyOrderDao.updateOrderStatus2COMPLETE(groupBuyTeamEntity.getTeamId());
+            if(1 != updateOrderStatusCount) {
+                throw new AppException(ResponseCode.UPDATE_ZERO);
+            }
+            //写入回调任务
+            List<String> outTradeNoList = groupBuyOrderListDao.queryGroupBuyCompleteOrderOutTradeNoListByTeamId(groupBuyTeamEntity.getTeamId());
+            NotifyTask notifyTask = NotifyTask.builder()
+                        .activityId(groupBuyTeamEntity.getActivityId())
+                        .teamId(groupBuyTeamEntity.getTeamId())
+                        .notifyUrl("暂无")
+                        .notifyCount(0)
+                        .notifyStatus(0)
+                        .parameterJson(JSON.toJSONString(new HashMap<String, Object>() {
+                            {
+                                put("teamId", groupBuyTeamEntity.getTeamId());
+                                put("outTradeNoList", outTradeNoList);
+                            }
+                        }))
+                        .build();
+            notifyTaskDao.insert(notifyTask);
+        }
     }
 
 }

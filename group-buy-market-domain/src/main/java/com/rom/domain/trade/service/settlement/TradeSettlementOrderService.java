@@ -40,7 +40,14 @@ public class TradeSettlementOrderService implements ITradeSettlementOrderService
                         .build())
                 .build();
         repository.settlementMarketPayOrder(groupBuyTeamSettlementAggregate);
-
-        return null;
+        // 5. 返回结算信息 - 公司中开发这样的流程时候，会根据外部需要进行值的设置
+        return TradePaySettlementEntity.builder()
+                .source(tradePaySuccessEntity.getSource())
+                .channel(tradePaySuccessEntity.getChannel())
+                .userId(tradePaySuccessEntity.getUserId())
+                .teamId(marketPayOrderEntity.getTeamId())
+                .activityId(groupBuyTeamEntity.getActivityId())
+                .outTradeNo(tradePaySuccessEntity.getOutTradeNo())
+                .build();
     }
 }

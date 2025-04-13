@@ -41,4 +41,8 @@ public interface IGroupBuyOrderDao {
      * @return
      */
     GroupBuyOrder queryGroupBuyTeamByTeamId(String teamId);
+
+    Integer updateAddCompleteCount(String teamId);
+
+    Integer updateOrderStatus2COMPLETE(String teamId);
 }
