@@ -75,7 +75,7 @@ public class TradeRepository implements ITradeRepository {
         UserEntity userEntity = groupBuyOrderAggregate.getUserEntity();
         PayActivityEntity payActivityEntity = groupBuyOrderAggregate.getPayActivityEntity();
         PayDiscountEntity payDiscountEntity = groupBuyOrderAggregate.getPayDiscountEntity();
-
+        Integer userTakeOrderCount = groupBuyOrderAggregate.getUserTakeOrderCount();
         //判断是否有团
         String teamId = payActivityEntity.getTeamId();
         if (StringUtils.isBlank(teamId)) {
@@ -116,7 +116,7 @@ public class TradeRepository implements ITradeRepository {
                 .channel(payDiscountEntity.getChannel())
                 .originalPrice(payDiscountEntity.getOriginalPrice())
                 .deductionPrice(payDiscountEntity.getDeductionPrice())
-                .bizId(payActivityEntity.getActivityId() + Constants.UNDERLINE + userEntity.getUserId() + Constants.UNDERLINE + groupBuyOrderAggregate.getUserTakeOrderCount() + 1)
+                .bizId(payActivityEntity.getActivityId() + Constants.UNDERLINE + userEntity.getUserId() + Constants.UNDERLINE + (userTakeOrderCount + 1))
                 .status(TradeOrderStatusEnumVO.CREATE.getCode())
                 .outTradeNo(payDiscountEntity.getOutTradeNo())
                 .build();
