@@ -28,9 +28,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Repository
@@ -82,6 +80,10 @@ public class TradeRepository implements ITradeRepository {
             //生成teamId，后续可用雪花算法
             teamId = RandomStringUtils.randomNumeric(8);
 
+            Date currentTime = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentTime);
+            calendar.add(Calendar.MINUTE, payActivityEntity.getValidTime());
             //构建拼单
             GroupBuyOrder groupBuyOrder = GroupBuyOrder.builder()
                     .teamId(teamId)
@@ -94,6 +96,8 @@ public class TradeRepository implements ITradeRepository {
                     .targetCount(payActivityEntity.getTargetCount())
                     .completeCount(0)
                     .lockCount(1)
+                    .validStartTime(currentTime)
+                    .validEndTime(calendar.getTime())
                     .build();
             groupBuyOrderDao.insert(groupBuyOrder);
         } else {
@@ -171,6 +175,8 @@ public class TradeRepository implements ITradeRepository {
                 .completeCount(groupBuyOrder.getCompleteCount())
                 .lockCount(groupBuyOrder.getLockCount())
                 .status(GroupBuyOrderEnumVO.valueOf(groupBuyOrder.getStatus()))
+                .validStartTime(groupBuyOrder.getValidStartTime())
+                .validEndTime(groupBuyOrder.getValidEndTime())
                 .build();
     }
 
@@ -184,6 +190,7 @@ public class TradeRepository implements ITradeRepository {
         //1. 更新订单状态（order_list）
         GroupBuyOrderList groupBuyOrderListReq = new GroupBuyOrderList();
         groupBuyOrderListReq.setOutTradeNo(tradePaySuccessEntity.getOutTradeNo());
+        groupBuyOrderListReq.setOutTradeTime(tradePaySuccessEntity.getOutTradeTime());
         groupBuyOrderListReq.setUserId(userEntity.getUserId());
         int updateOrderListStatusCount = groupBuyOrderListDao.updateOrderStatus2COMPLETE(groupBuyOrderListReq);
         if(1 != updateOrderListStatusCount) {

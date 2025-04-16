@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,4 +20,6 @@ public class TradePaySuccessEntity {
     private String userId;
     /** 外部交易单号-确保外部调用唯一幂等 */
     private String outTradeNo;
+    /** 外部交易时间 */
+    private Date outTradeTime;
 }

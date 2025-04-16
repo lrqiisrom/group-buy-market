@@ -15,6 +15,8 @@
         <result column="complete_count" property="completeCount"/>
         <result column="lock_count" property="lockCount"/>
         <result column="status" property="status"/>
+        <result column="valid_start_time" property="validStartTime"/>
+        <result column="valid_end_time" property="validEndTime"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
@@ -22,10 +24,12 @@
     <insert id="insert" parameterType="com.rom.infrastructure.dao.po.GroupBuyOrder">
         insert into group_buy_order(
         team_id, activity_id, source, channel, original_price,
-        deduction_price, pay_price, target_count, complete_count, lock_count, status, create_time, update_time
+        deduction_price, pay_price, target_count, complete_count, lock_count, status, valid_start_time,
+        valid_end_time, create_time, update_time
         ) values(
         #{teamId}, #{activityId}, #{source}, #{channel}, #{originalPrice},
-        #{deductionPrice}, #{payPrice}, #{targetCount}, #{completeCount}, #{lockCount}, 0, now(), now()
+        #{deductionPrice}, #{payPrice}, #{targetCount}, #{completeCount},
+        #{lockCount}, 0, #{validStartTime}, #{validEndTime}, now(), now()
         )
     </insert>
 
