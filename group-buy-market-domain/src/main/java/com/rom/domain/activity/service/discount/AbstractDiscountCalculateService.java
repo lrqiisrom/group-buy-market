@@ -21,7 +21,7 @@ public abstract class AbstractDiscountCalculateService implements IDiscountCalcu
         if (DiscountTypeEnum.TAG.equals(groupBuyDiscount.getDiscountType())){
            boolean isCrowdRange =  filterTagId(userId, groupBuyDiscount.getTagId());
            if(!isCrowdRange) {
-               log.info("折扣优惠计算拦截，用户不再优惠人群标签范围内 userId:{}", userId);
+               log.info("折扣优惠计算拦截，用户不在优惠人群标签范围内 userId:{}", userId);
                return originalPrice;
            }
         }

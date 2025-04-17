@@ -52,7 +52,7 @@
         where team_id = #{teamId}
     </select>
     <select id="queryGroupBuyTeamByTeamId" parameterType="java.lang.String" resultMap="dataMap">
-        select team_id, activity_id, target_count, complete_count, lock_count, status
+        select team_id, activity_id, target_count, complete_count, lock_count, status, valid_start_time, valid_end_time
         from group_buy_order where team_id = #{teamId}
     </select>
     <update id="updateAddCompleteCount" parameterType="java.lang.String">

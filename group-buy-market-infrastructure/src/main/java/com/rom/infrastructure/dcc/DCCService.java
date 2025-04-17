@@ -1,7 +1,11 @@
 package com.rom.infrastructure.dcc;
 
 import com.rom.types.annotations.DCCValue;
+import com.rom.types.common.Constants;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 动态配置服务
@@ -17,7 +21,8 @@ public class DCCService {
 
     @DCCValue("cutRange:100")
     private String cutRange;
-
+    @DCCValue("scBlacklist:s02c02")
+    private String scBlacklist;
     //判断是否降级
     public boolean isDowngradeSwitch() {
         return ("1").equals(downgradeSwitch);
@@ -34,4 +39,9 @@ public class DCCService {
         }
         return false;
     }
+    public boolean isSCBlackIntercept(String source, String channel) {
+        List<String> list = Arrays.asList(scBlacklist.split(Constants.SPLIT));
+        return list.contains(source + channel);
+    }
+
 }
