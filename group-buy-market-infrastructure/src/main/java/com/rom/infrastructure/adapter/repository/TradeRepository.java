@@ -99,6 +99,7 @@ public class TradeRepository implements ITradeRepository {
                     .targetCount(payActivityEntity.getTargetCount())
                     .completeCount(0)
                     .lockCount(1)
+                    .notifyUrl(payDiscountEntity.getNotifyUrl())
                     .validStartTime(currentTime)
                     .validEndTime(calendar.getTime())
                     .build();
@@ -216,7 +217,7 @@ public class TradeRepository implements ITradeRepository {
             NotifyTask notifyTask = NotifyTask.builder()
                         .activityId(groupBuyTeamEntity.getActivityId())
                         .teamId(groupBuyTeamEntity.getTeamId())
-                        .notifyUrl("暂无")
+                        .notifyUrl(groupBuyTeamEntity.getNotifyUrl())
                         .notifyCount(0)
                         .notifyStatus(0)
                         .parameterJson(JSON.toJSONString(new HashMap<String, Object>() {

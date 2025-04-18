@@ -45,6 +45,7 @@ public class TradeSettlementOrderService implements ITradeSettlementOrderService
                 .status(tradeSettlementRuleFilterBackEntity.getStatus())
                 .validStartTime(tradeSettlementRuleFilterBackEntity.getValidStartTime())
                 .validEndTime(tradeSettlementRuleFilterBackEntity.getValidEndTime())
+                .notifyUrl(tradeSettlementRuleFilterBackEntity.getNotifyUrl())
                 .build();
         // 3. 构建聚合对象
         GroupBuyTeamSettlementAggregate groupBuyTeamSettlementAggregate = GroupBuyTeamSettlementAggregate.builder()

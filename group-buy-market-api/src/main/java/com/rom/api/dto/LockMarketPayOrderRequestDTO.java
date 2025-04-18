@@ -23,4 +23,6 @@ public class LockMarketPayOrderRequestDTO {
     private String goodsId;
     //活动id
     private Long activityId;
+    //回调地址
+    private String notifyUrl;
 }
