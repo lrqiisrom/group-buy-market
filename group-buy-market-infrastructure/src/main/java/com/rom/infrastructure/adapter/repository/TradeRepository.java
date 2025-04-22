@@ -181,6 +181,7 @@ public class TradeRepository implements ITradeRepository {
                 .status(GroupBuyOrderEnumVO.valueOf(groupBuyOrder.getStatus()))
                 .validStartTime(groupBuyOrder.getValidStartTime())
                 .validEndTime(groupBuyOrder.getValidEndTime())
+                .notifyUrl(groupBuyOrder.getNotifyUrl())
                 .build();
     }
 
@@ -259,7 +260,6 @@ public class TradeRepository implements ITradeRepository {
     public List<NotifyTaskEntity> queryUnExecutedNotifyTaskList(String teamId) {
         NotifyTask notifyTask = notifyTaskDao.queryUnExecutedNotifyTaskListByTeamId(teamId);
         if(null == notifyTask) return new ArrayList<>();
-        List<NotifyTaskEntity> notifyTaskEntities = new ArrayList<>();
         return Collections.singletonList(NotifyTaskEntity.builder()
                 .teamId(notifyTask.getTeamId())
                 .notifyUrl(notifyTask.getNotifyUrl())

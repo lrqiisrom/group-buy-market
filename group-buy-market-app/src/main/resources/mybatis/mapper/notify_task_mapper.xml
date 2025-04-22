@@ -26,7 +26,7 @@
             limit 50
     </select>
 
-    <select id="queryUnExecutedNotifyTaskByTeamId" resultMap="dataMap">
+    <select id="queryUnExecutedNotifyTaskListByTeamId" resultMap="dataMap">
         select activity_id, team_id, notify_url, notify_count, notify_status, parameter_json
         from notify_task
         where team_id = #{teamId} and notify_status in (0, 2)

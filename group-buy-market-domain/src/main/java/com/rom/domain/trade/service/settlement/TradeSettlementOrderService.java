@@ -64,7 +64,7 @@ public class TradeSettlementOrderService implements ITradeSettlementOrderService
                 .tradePaySuccessEntity(tradePaySuccessEntity)
                 .build();
         // 4. 拼团交易结算
-        boolean isNotify =  repository.settlementMarketPayOrder(groupBuyTeamSettlementAggregate);
+        boolean isNotify = repository.settlementMarketPayOrder(groupBuyTeamSettlementAggregate);
         if (isNotify) {
             Map<String, Integer> notifyResultMap = execSettlementNotifyJob(teamId);
             log.info("回调通知拼团完结 result:{}", JSON.toJSONString(notifyResultMap));
