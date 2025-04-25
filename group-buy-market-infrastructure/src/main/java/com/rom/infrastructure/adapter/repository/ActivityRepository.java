@@ -1,24 +1,21 @@
 package com.rom.infrastructure.adapter.repository;
 
 import com.rom.domain.activity.adapter.repository.IActivityRepository;
+import com.rom.domain.activity.model.entity.UserGroupBuyOrderDetailEntity;
 import com.rom.domain.activity.model.valobj.DiscountTypeEnum;
 import com.rom.domain.activity.model.valobj.GroupBuyActivityDiscountVO;
 import com.rom.domain.activity.model.valobj.SCSkuActivityVO;
 import com.rom.domain.activity.model.valobj.SkuVO;
-import com.rom.infrastructure.dao.IGroupBuyActivityDao;
-import com.rom.infrastructure.dao.IGroupBuyDiscountDao;
-import com.rom.infrastructure.dao.ISCSkuActivityDao;
-import com.rom.infrastructure.dao.ISkuDao;
-import com.rom.infrastructure.dao.po.GroupBuyActivity;
-import com.rom.infrastructure.dao.po.GroupBuyDiscount;
-import com.rom.infrastructure.dao.po.SCSkuActivity;
-import com.rom.infrastructure.dao.po.Sku;
+import com.rom.infrastructure.dao.*;
+import com.rom.infrastructure.dao.po.*;
 import com.rom.infrastructure.dcc.DCCService;
 import com.rom.infrastructure.redis.IRedisService;
 import org.redisson.api.RBitSet;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 活动仓储实现
@@ -34,7 +31,10 @@ public class ActivityRepository implements IActivityRepository {
     private IGroupBuyDiscountDao groupBuyDiscountDao;
     @Resource
     private ISkuDao skuDao;
-
+    @Resource
+    private IGroupBuyOrderListDao groupBuyOrderListDao;
+    @Resource
+    private IGroupBuyOrderDao groupBuyOrderDao;
     @Resource
     private ISCSkuActivityDao skuActivityDao;
 
@@ -127,5 +127,51 @@ public class ActivityRepository implements IActivityRepository {
     @Override
     public boolean cutRange(String userId) {
         return dccService.isCutRange(userId);
+    }
+
+    @Override
+    public List<UserGroupBuyOrderDetailEntity> queryInProgressUserGroupBuyOrderDetailListByOwner(Long activityId, String userId, Integer ownerCount) {
+        GroupBuyOrderList groupBuyOrderListReq = new GroupBuyOrderList();
+        groupBuyOrderListReq.setActivityId(activityId);
+        groupBuyOrderListReq.setUserId(userId);
+        groupBuyOrderListReq.setCount(ownerCount);
+        List<GroupBuyOrderList> groupBuyOrderLists = groupBuyOrderListDao.queryInProgressUserGroupBuyOrderDetailListByUserId(groupBuyOrderListReq);
+        if(null != groupBuyOrderLists && !groupBuyOrderLists.isEmpty()) return null;
+
+        //过滤重复teamId
+        Set<String> teamIds = groupBuyOrderLists.stream()
+                .map(GroupBuyOrderList::getTeamId)
+                .filter(teamId -> teamId != null && !teamId.isEmpty())
+                .collect(Collectors.toSet());
+        //查询队伍明细，组装Map结构
+        List<GroupBuyOrder> groupBuyOrders = groupBuyOrderDao.queryGroupBuyProgressByTeamIds(teamIds);
+        Map<String, GroupBuyOrder> groupBuyOrderMap = groupBuyOrders.stream()
+                .collect(Collectors.toMap(GroupBuyOrder::getTeamId, groupBuyOrder -> groupBuyOrder));
+        List<UserGroupBuyOrderDetailEntity> userGroupBuyOrderDetailEntities = new ArrayList<>();
+        for (GroupBuyOrderList groupBuyOrderList : groupBuyOrderLists) {
+            String teamId = groupBuyOrderList.getTeamId();
+            GroupBuyOrder groupBuyOrder = groupBuyOrderMap.get(teamId);
+            if (null == groupBuyOrder) continue;
+
+            UserGroupBuyOrderDetailEntity userGroupBuyOrderDetailEntity = UserGroupBuyOrderDetailEntity.builder()
+                    .userId(groupBuyOrderList.getUserId())
+                    .teamId(groupBuyOrder.getTeamId())
+                    .activityId(groupBuyOrder.getActivityId())
+                    .targetCount(groupBuyOrder.getTargetCount())
+                    .completeCount(groupBuyOrder.getCompleteCount())
+                    .lockCount(groupBuyOrder.getLockCount())
+                    .validStartTime(groupBuyOrder.getValidStartTime())
+                    .validEndTime(groupBuyOrder.getValidEndTime())
+                    .build();
+
+            userGroupBuyOrderDetailEntities.add(userGroupBuyOrderDetailEntity);
+        }
+
+        return userGroupBuyOrderDetailEntities;
+    }
+
+    @Override
+    public List<UserGroupBuyOrderDetailEntity> queryInProgressUserGroupBuyOrderDetailListByRandom(Long activityId, String userId, Integer randomCount) {
+        return Collections.emptyList();
     }
 }

@@ -25,4 +25,5 @@ public interface IGroupBuyOrderListDao {
 
     List<String> queryGroupBuyCompleteOrderOutTradeNoListByTeamId(String teamId);
 
+    List<GroupBuyOrderList> queryInProgressUserGroupBuyOrderDetailListByUserId(GroupBuyOrderList groupBuyOrderListReq);
 }
