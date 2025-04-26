@@ -4,6 +4,7 @@ import com.rom.domain.activity.adapter.repository.IActivityRepository;
 import com.rom.domain.activity.model.entity.MarketProductEntity;
 import com.rom.domain.activity.model.entity.TrialBalanceEntity;
 import com.rom.domain.activity.model.entity.UserGroupBuyOrderDetailEntity;
+import com.rom.domain.activity.model.valobj.TeamStatisticVO;
 import com.rom.domain.activity.service.trial.factory.DefaultActivityStrategyFactory;
 import com.rom.types.design.framework.tree.StrategyHandler;
 import org.springframework.stereotype.Service;
@@ -48,5 +49,10 @@ public class IndexGroupBuyMarketServiceImpl implements IIndexGroupBuyMarketServi
             }
         }
         return unionAllList;
+    }
+
+    @Override
+    public TeamStatisticVO queryTeamStatisticByActivityId(Long activityId) {
+        return repository.queryTeamStatisticByActivityId(activityId);
     }
 }

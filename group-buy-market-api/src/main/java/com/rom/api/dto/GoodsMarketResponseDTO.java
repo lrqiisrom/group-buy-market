@@ -42,6 +42,10 @@ public class GoodsMarketResponseDTO {
     /**
      * 组队信息
      */
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Team {
         // 用户ID
         private String userId;

@@ -5,6 +5,7 @@ import com.rom.domain.activity.model.entity.UserGroupBuyOrderDetailEntity;
 import com.rom.domain.activity.model.valobj.GroupBuyActivityDiscountVO;
 import com.rom.domain.activity.model.valobj.SCSkuActivityVO;
 import com.rom.domain.activity.model.valobj.SkuVO;
+import com.rom.domain.activity.model.valobj.TeamStatisticVO;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface IActivityRepository {
     List<UserGroupBuyOrderDetailEntity> queryInProgressUserGroupBuyOrderDetailListByOwner(Long activityId, String userId, Integer ownerCount);
 
     List<UserGroupBuyOrderDetailEntity> queryInProgressUserGroupBuyOrderDetailListByRandom(Long activityId, String userId, Integer randomCount);
+
+    TeamStatisticVO queryTeamStatisticByActivityId(Long activityId);
 }

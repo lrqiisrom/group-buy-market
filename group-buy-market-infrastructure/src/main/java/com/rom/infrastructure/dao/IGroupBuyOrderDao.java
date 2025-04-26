@@ -50,4 +50,10 @@ public interface IGroupBuyOrderDao {
     Integer updateOrderStatus2COMPLETE(String teamId);
 
     List<GroupBuyOrder> queryGroupBuyProgressByTeamIds(Set<String> teamIds);
+
+    Integer queryAllTeamCount(Set<String> teamIds);
+
+    Integer queryAllTeamCompleteCount(Set<String> teamIds);
+
+    Integer queryAllUserCount(Set<String> teamIds);
 }
