@@ -65,7 +65,9 @@ public class MarketTradeController implements IMarketTradeService {
             if (null != marketPayOrderEntity) {
                 LockMarketPayOrderResponseDTO lockMarketPayOrderResponseDTO = LockMarketPayOrderResponseDTO.builder()
                         .orderId(marketPayOrderEntity.getOrderId())
+                        .originalPrice(marketPayOrderEntity.getOriginalPrice())
                         .deductionPrice(marketPayOrderEntity.getDeductionPrice())
+                        .payPrice(marketPayOrderEntity.getPayPrice())
                         .tradeOrderStatus(marketPayOrderEntity.getTradeOrderStatusEnumVO().getCode())
                         .build();
                 log.info("交易锁单记录(存在):{} marketPayOrderEntity:{}", userId, JSON.toJSONString(marketPayOrderEntity));

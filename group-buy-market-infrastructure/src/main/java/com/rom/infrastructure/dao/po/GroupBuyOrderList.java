@@ -40,6 +40,8 @@ public class GroupBuyOrderList extends Page {
     private BigDecimal originalPrice;
     /** 折扣金额 */
     private BigDecimal deductionPrice;
+    /** 支付金额 */
+    private BigDecimal payPrice;
     /** 状态；0初始锁定、1消费完成 */
     private Integer status;
     /** 外部交易单号-确保外部调用唯一幂等 */
