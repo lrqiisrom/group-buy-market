@@ -15,5 +15,5 @@ public interface IMarketIndexService {
      * @param requestDTO 营销商品信息
      * @return 营销配置信息
      */
-    Response<GoodsMarketResponseDTO> queryGroupButMarketConfig(GoodsMarketRequestDTO requestDTO);
+    Response<GoodsMarketResponseDTO> queryGroupBuyMarketConfig(GoodsMarketRequestDTO requestDTO);
 }

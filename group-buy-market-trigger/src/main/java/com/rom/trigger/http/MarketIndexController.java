@@ -35,7 +35,7 @@ public class MarketIndexController implements IMarketIndexService {
 
     @RequestMapping(value = "query_group_buy_market_config", method = RequestMethod.POST)
     @Override
-    public Response<GoodsMarketResponseDTO> queryGroupButMarketConfig(@RequestBody GoodsMarketRequestDTO requestDTO) {
+    public Response<GoodsMarketResponseDTO> queryGroupBuyMarketConfig(@RequestBody GoodsMarketRequestDTO requestDTO) {
         try {
             log.info("查询拼团营销配置开始:{} goodsId:{}", requestDTO.getUserId(), requestDTO.getGoodsId());
             if (StringUtils.isBlank(requestDTO.getUserId()) || StringUtils.isBlank(requestDTO.getSource()) || StringUtils.isBlank(requestDTO.getChannel()) || StringUtils.isBlank(requestDTO.getGoodsId())) {
