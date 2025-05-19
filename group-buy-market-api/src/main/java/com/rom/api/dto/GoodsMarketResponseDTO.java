@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GoodsMarketResponseDTO {
+    // 活动ID
+    private Long activityId;
     //商品信息
     private Goods goods;
     //组队信息
