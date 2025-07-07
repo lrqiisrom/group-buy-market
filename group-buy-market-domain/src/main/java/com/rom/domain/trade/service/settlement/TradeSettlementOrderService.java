@@ -5,10 +5,12 @@ import com.rom.domain.trade.adapter.port.ITradePort;
 import com.rom.domain.trade.adapter.repository.ITradeRepository;
 import com.rom.domain.trade.model.aggregate.GroupBuyTeamSettlementAggregate;
 import com.rom.domain.trade.model.entity.*;
+import com.rom.domain.trade.model.valobj.NotifyTypeEnumVO;
 import com.rom.domain.trade.service.ITradeSettlementOrderService;
 import com.rom.domain.trade.service.settlement.factory.TradeSettlementRuleFilterFactory;
 import com.rom.types.design.framework.link.model2.chain.BusinessLinkedList;
 import com.rom.types.enums.NotifyTaskHTTPEnumVO;
+import com.rom.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @description 拼团交易结算服务
@@ -30,6 +33,8 @@ public class TradeSettlementOrderService implements ITradeSettlementOrderService
     private BusinessLinkedList<TradeSettlementRuleCommandEntity, TradeSettlementRuleFilterFactory.DynamicContext, TradeSettlementRuleFilterBackEntity> tradeSettlementRuleFilter;
     @Resource
     private ITradePort port;
+    @Resource
+    private ThreadPoolExecutor threadPoolExecutor;
     @Override
     public TradePaySettlementEntity settlementMarketPayOrder(TradePaySuccessEntity tradePaySuccessEntity) throws Exception {
         log.info("拼团交易-支付订单结算:{} outTradeNo:{}", tradePaySuccessEntity.getUserId(), tradePaySuccessEntity.getOutTradeNo());
@@ -66,6 +71,16 @@ public class TradeSettlementOrderService implements ITradeSettlementOrderService
         // 4. 拼团交易结算
         NotifyTaskEntity notifyTaskEntity = repository.settlementMarketPayOrder(groupBuyTeamSettlementAggregate);
         if (null != notifyTaskEntity) {
+            threadPoolExecutor.execute(() -> {
+                Map<String, Integer> notifyResultMap = null;
+                try {
+                    notifyResultMap = execSettlementNotifyJob(notifyTaskEntity);
+                    log.info("回调通知拼团完结 result:{}", JSON.toJSONString(notifyResultMap));
+                } catch (Exception e) {
+                    log.error("回调通知拼团完结失败 result:{}", JSON.toJSONString(notifyResultMap), e);
+                    throw new AppException(e.getMessage());
+                }
+            });
             Map<String, Integer> notifyResultMap = execSettlementNotifyJob(teamId);
             log.info("回调通知拼团完结 result:{}", JSON.toJSONString(notifyResultMap));
         }
@@ -78,6 +93,11 @@ public class TradeSettlementOrderService implements ITradeSettlementOrderService
                 .activityId(groupBuyTeamEntity.getActivityId())
                 .outTradeNo(tradePaySuccessEntity.getOutTradeNo())
                 .build();
+    }
+
+    @Override
+    public Map<String, Integer> execSettlementNotifyJob(NotifyTaskEntity notifyTaskEntity) throws Exception {
+        return execSettlementNotifyJob(Collections.singletonList(notifyTaskEntity));
     }
 
     @Override

@@ -268,15 +268,17 @@ public class TradeRepository implements ITradeRepository {
     @Override
     public List<NotifyTaskEntity> queryUnExecutedNotifyTaskList() {
         List<NotifyTask> notifyTaskList = notifyTaskDao.queryUnExecutedNotifyTaskList();
-        if(notifyTaskList.isEmpty()) return new ArrayList<>();
+        if (notifyTaskList.isEmpty()) return new ArrayList<>();
         List<NotifyTaskEntity> notifyTaskEntities = new ArrayList<>();
-        for(NotifyTask notifyTask : notifyTaskList) {
+        for (NotifyTask notifyTask : notifyTaskList) {
             NotifyTaskEntity notifyTaskEntity = NotifyTaskEntity.builder()
-                        .teamId(notifyTask.getTeamId())
-                        .notifyUrl(notifyTask.getNotifyUrl())
-                        .notifyCount(notifyTask.getNotifyCount())
-                        .parameterJson(notifyTask.getParameterJson())
-                        .build();
+                    .teamId(notifyTask.getTeamId())
+                    .notifyType(notifyTask.getNotifyType())
+                    .notifyMQ(notifyTask.getNotifyMQ())
+                    .notifyUrl(notifyTask.getNotifyUrl())
+                    .notifyCount(notifyTask.getNotifyCount())
+                    .parameterJson(notifyTask.getParameterJson())
+                    .build();
             notifyTaskEntities.add(notifyTaskEntity);
         }
         return notifyTaskEntities;
@@ -285,9 +287,11 @@ public class TradeRepository implements ITradeRepository {
     @Override
     public List<NotifyTaskEntity> queryUnExecutedNotifyTaskList(String teamId) {
         NotifyTask notifyTask = notifyTaskDao.queryUnExecutedNotifyTaskListByTeamId(teamId);
-        if(null == notifyTask) return new ArrayList<>();
+        if (null == notifyTask) return new ArrayList<>();
         return Collections.singletonList(NotifyTaskEntity.builder()
                 .teamId(notifyTask.getTeamId())
+                .notifyType(notifyTask.getNotifyType())
+                .notifyMQ(notifyTask.getNotifyMQ())
                 .notifyUrl(notifyTask.getNotifyUrl())
                 .notifyCount(notifyTask.getNotifyCount())
                 .parameterJson(notifyTask.getParameterJson())
