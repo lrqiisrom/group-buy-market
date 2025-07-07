@@ -13,6 +13,8 @@ import com.rom.domain.activity.model.valobj.GroupBuyActivityDiscountVO;
 import com.rom.domain.activity.service.IIndexGroupBuyMarketService;
 import com.rom.domain.trade.model.entity.*;
 import com.rom.domain.trade.model.valobj.GroupBuyProgressVO;
+import com.rom.domain.trade.model.valobj.NotifyConfigVO;
+import com.rom.domain.trade.model.valobj.NotifyTypeEnumVO;
 import com.rom.domain.trade.service.ITradeLockOrderService;
 import com.rom.domain.trade.service.ITradeSettlementOrderService;
 import com.rom.types.enums.ResponseCode;
@@ -50,11 +52,12 @@ public class MarketTradeController implements IMarketTradeService {
             String channel = requestDTO.getChannel();
             String source = requestDTO.getSource();
             String teamId = requestDTO.getTeamId();
-            String notifyUrl = requestDTO.getNotifyUrl();
+            LockMarketPayOrderRequestDTO.NotifyConfigVO notifyConfigVO = requestDTO.getNotifyConfigVO();
             log.info("营销交易锁单:{} LockMarketPayOrderRequestDTO:{}", userId, JSON.toJSONString(requestDTO));
 
             if (StringUtils.isBlank(userId) || StringUtils.isBlank(source) || StringUtils.isBlank(channel) ||
-                    StringUtils.isBlank(goodsId) || null == activityId || StringUtils.isBlank(notifyUrl)) {
+                    StringUtils.isBlank(goodsId) || null == activityId ||
+                    ("HTTP".equals(notifyConfigVO.getNotifyType()) && StringUtils.isBlank(notifyConfigVO.getNotifyUrl()))) {
                 return Response.<LockMarketPayOrderResponseDTO>builder()
                         .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
                         .info(ResponseCode.ILLEGAL_PARAMETER.getInfo())
@@ -126,7 +129,11 @@ public class MarketTradeController implements IMarketTradeService {
                             .payPrice(trialBalanceEntity.getPayPrice())
                             .goodsName(trialBalanceEntity.getGoodsName())
                             .source(source)
-                            .notifyUrl(notifyUrl)
+                            .notifyConfigVO(NotifyConfigVO.builder()
+                                    .notifyType(NotifyTypeEnumVO.valueOf(notifyConfigVO.getNotifyType()))
+                                    .notifyMQ(notifyConfigVO.getNotifyMQ())
+                                    .notifyUrl(notifyConfigVO.getNotifyUrl())
+                                    .build())
                             .build()
                     );
             log.info("交易锁单记录(新):{} marketPayOrderEntity:{}", userId, JSON.toJSONString(marketPayOrderEntity));

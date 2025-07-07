@@ -55,7 +55,7 @@ public class TradeSettlementOrderService implements ITradeSettlementOrderService
                 .status(tradeSettlementRuleFilterBackEntity.getStatus())
                 .validStartTime(tradeSettlementRuleFilterBackEntity.getValidStartTime())
                 .validEndTime(tradeSettlementRuleFilterBackEntity.getValidEndTime())
-                .notifyUrl(tradeSettlementRuleFilterBackEntity.getNotifyUrl())
+                .notifyConfigVO(tradeSettlementRuleFilterBackEntity.getNotifyConfigVO())
                 .build();
         // 3. 构建聚合对象
         GroupBuyTeamSettlementAggregate groupBuyTeamSettlementAggregate = GroupBuyTeamSettlementAggregate.builder()
@@ -64,8 +64,8 @@ public class TradeSettlementOrderService implements ITradeSettlementOrderService
                 .tradePaySuccessEntity(tradePaySuccessEntity)
                 .build();
         // 4. 拼团交易结算
-        boolean isNotify = repository.settlementMarketPayOrder(groupBuyTeamSettlementAggregate);
-        if (isNotify) {
+        NotifyTaskEntity notifyTaskEntity = repository.settlementMarketPayOrder(groupBuyTeamSettlementAggregate);
+        if (null != notifyTaskEntity) {
             Map<String, Integer> notifyResultMap = execSettlementNotifyJob(teamId);
             log.info("回调通知拼团完结 result:{}", JSON.toJSONString(notifyResultMap));
         }

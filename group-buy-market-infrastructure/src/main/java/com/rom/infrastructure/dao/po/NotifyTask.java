@@ -24,6 +24,10 @@ public class NotifyTask {
     private String teamId;
     /** 回调接口 */
     private String notifyUrl;
+    /** 回调类型 */
+    private String notifyType;
+    /** 回调消息 */
+    private String notifyMQ;
     /** 回调次数 */
     private Integer notifyCount;
     /** 回调状态【0初始、1完成、2重试、3失败】 */

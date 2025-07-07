@@ -23,6 +23,25 @@ public class LockMarketPayOrderRequestDTO {
     private String goodsId;
     //活动id
     private Long activityId;
-    //回调地址
-    private String notifyUrl;
+    //回调配置
+    private NotifyConfigVO notifyConfigVO;
+
+    public void setNotifyUrl(String url) {
+        NotifyConfigVO notifyConfigVO = new NotifyConfigVO();
+        notifyConfigVO.setNotifyType("HTTP");
+        notifyConfigVO.setNotifyUrl(url);
+        this.notifyConfigVO = notifyConfigVO;
+    }
+
+    public void setNotifyMQ() {
+        NotifyConfigVO notifyConfigVO = new NotifyConfigVO();
+        notifyConfigVO.setNotifyType("MQ");
+        this.notifyConfigVO = notifyConfigVO;
+    }
+    @Data
+    public static class NotifyConfigVO {
+        private String notifyType;
+        private String notifyMQ;
+        private String notifyUrl;
+    }
 }
