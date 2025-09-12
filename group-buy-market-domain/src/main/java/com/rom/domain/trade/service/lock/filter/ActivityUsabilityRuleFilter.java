@@ -40,7 +40,7 @@ public class ActivityUsabilityRuleFilter implements ILogicHandler<TradeLockRuleC
             log.info("活动的可用性校验，不在有效期内 activityId:{}", requestParameter.getActivityId());
             throw new AppException(ResponseCode.E0102);
         }
-        dynamicContext.setGroupBuyActivityEntity(groupBuyActivity);
+        dynamicContext.setGroupBuyActivity(groupBuyActivity);
         return next(requestParameter, dynamicContext);
     }
 }

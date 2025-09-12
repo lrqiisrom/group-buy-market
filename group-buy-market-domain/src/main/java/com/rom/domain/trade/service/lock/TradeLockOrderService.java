@@ -44,6 +44,7 @@ public class TradeLockOrderService implements ITradeLockOrderService {
                 TradeLockRuleCommandEntity.builder()
                         .activityId(payActivityEntity.getActivityId())
                         .userId(userEntity.getUserId())
+                        .teamId(payActivityEntity.getTeamId())
                         .build(),
                 new TradeLockRuleFilterFactory.DynamicContext()
         );
@@ -54,6 +55,11 @@ public class TradeLockOrderService implements ITradeLockOrderService {
                 .userEntity(userEntity)
                 .userTakeOrderCount(userTakeOrderCount)
                 .build();
-        return repository.lockMarketPayOrder(groupBuyOrderAggregate);
+        try {
+            return repository.lockMarketPayOrder(groupBuyOrderAggregate);
+        } catch (Exception e) {
+            repository.recoveryTeamStock(tradeLockRuleFilterBackEntity.getRecoveryTeamStockKey(), payActivityEntity.getValidTime());
+            throw e;
+        }
     }
 }
