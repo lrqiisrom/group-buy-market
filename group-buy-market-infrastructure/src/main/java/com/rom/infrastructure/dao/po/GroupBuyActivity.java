@@ -42,4 +42,8 @@ public class GroupBuyActivity {
     private Date createTime;
     /** 更新时间 **/
     private Date updateTime;
+
+    public static String cacheRedisKey(Long activityId) {
+        return "group_buy_market_com.rom.infrastructure.dao.po.GroupBuyActivity" + activityId;
+    }
 }

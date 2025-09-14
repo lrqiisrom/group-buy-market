@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * 活动仓储实现
  */
 @Repository
-public class ActivityRepository implements IActivityRepository {
+public class ActivityRepository extends AbstractRepository implements IActivityRepository {
 
     /** DAO查询拼团 */
     @Resource
@@ -43,19 +43,17 @@ public class ActivityRepository implements IActivityRepository {
     /** 根据SC渠道查询商品折扣 */
     @Override
     public GroupBuyActivityDiscountVO queryGroupBuyActivityDiscount(Long activityId) {
-//        //初始化一个拼团示例,当作发送查询请求
-//        GroupBuyActivity groupBuyActivityReq = new GroupBuyActivity();
-//        groupBuyActivityReq.setSource(source);
-//        groupBuyActivityReq.setChannel(channel);
-        //接受查询结果
-        //System.out.println(source + " " + channel);
-        //System.out.println(groupBuyActivityReq);
-        GroupBuyActivity groupBuyActivityRes = groupBuyActivityDao.queryValidGroupBuyActivityId(activityId);
+        GroupBuyActivity groupBuyActivityRes = getFromCacheOrDb(GroupBuyActivity.cacheRedisKey(activityId),
+                () -> groupBuyActivityDao.queryValidGroupBuyActivityId(activityId));
         if (null == groupBuyActivityRes) return null;
         //System.out.println(groupBuyActivityRes);
+
         String discountId = groupBuyActivityRes.getDiscountId();
-        GroupBuyDiscount groupBuyDiscountRes = groupBuyDiscountDao.queryGroupBuyActivityDiscountByDiscountId(discountId);
+
+        GroupBuyDiscount groupBuyDiscountRes = getFromCacheOrDb(GroupBuyDiscount.cacheRedisKey(discountId),
+                () -> groupBuyDiscountDao.queryGroupBuyActivityDiscountByDiscountId(discountId));
         if (null == groupBuyDiscountRes) return null;
+
         GroupBuyActivityDiscountVO.GroupBuyDiscount groupBuyDiscount = GroupBuyActivityDiscountVO.GroupBuyDiscount.builder()
                 .discountName(groupBuyDiscountRes.getDiscountName())
                 .discountDesc(groupBuyDiscountRes.getDiscountDesc())
